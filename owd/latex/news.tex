@@ -1,0 +1,73 @@
+{\bfseries Higher data rate from Force/\-Torque sensor} O\-W\-D now requests values from the Force/\-Torque sensor every C\-A\-Nbus cycle for a data rate of 500\-Hz. \mbox{[}19-\/\-May-\/2011\mbox{]}
+
+{\bfseries New parameters for setting publish rates of O\-W\-D topics} O\-W\-D now has four individual parameters to set the rate of the various topics being published\-: wam\-\_\-publish\-\_\-frequency, hand\-\_\-publish\-\_\-frequency, ft\-\_\-publish\-\_\-frequency, and tactile\-\_\-publish\-\_\-frequency. Each one defaults to 10\-Hz and can be set up to the upper limit that the particular data type is read from the C\-A\-Nbus (see the documentation for more details).
+
+{\bfseries bhd/\-Set\-Speed service} O\-W\-D now lets you set the speed of the hand joints for subsequent Move\-Hand commands. It reuses the same service message used for owd/\-Set\-Speed. In the case of the hand, the velocities vector should have four values in units of radians per second (three for the fingers, one for the spread). The default values for the 280 hand are 2.\-5 for the fingers and 4.\-3 for the spread. The min\-\_\-accel\-\_\-time field in the service message is ignored for the hand. \mbox{[}11-\/\-May-\/2011\mbox{]}
+
+{\bfseries Jacobian support added to Plugin interface} Two functions have been added to the O\-W\-D\-::\-Plugin interface to assist with writing trajectories that operate in workspace coordinates. The function O\-W\-D\-::\-Plugin\-::\-Jacobian\-\_\-times\-\_\-vector multiplies the Jacobian for the current configuration by the supplied vector in order to transform jointspace values (velocities or torques) into workspace values (linear/angular velocities or forces/torques). The function O\-W\-D\-::\-Plugin\-::\-Jacobian\-Transpose\-\_\-times\-\_\-vector helps you go in the other direction (but of course the standard qualifications about using the Jacobian\-Transpose apply). Also, the full transformation matrix of the end-\/effector frame (link7) is now available as O\-W\-D\-::\-Plugin\-::endpoint.
+
+{\bfseries Set\-Extra\-Mass service call added} Clients can call the Set\-Extra\-Mass function to add mass properties to any of the W\-A\-M links. This allows for better control when the W\-A\-M is picking up a heavy object, for instance. \mbox{[}26-\/\-April-\/2011\mbox{]}
+
+{\bfseries O\-W\-D Plugins} O\-W\-D now supports runtime-\/loadable plugins (r8821). Now you can define custom interfaces and behaviors for O\-W\-D without having to modify the core code. This speeds your development time while also making it easier to keep abreast of O\-W\-D changes. See the \hyperlink{plugins}{O\-W\-D Plugins} page for more details. \mbox{[}25-\/\-Apr-\/2011\mbox{]}
+
+{\bfseries Model 280 Hand now keeps squeezing grasped objects} The behavior of the Move\-Hand service call has been improved for users with a model 280 Hand. Previously, the hand would try to move the fingers to the commanded position, and stop once the fingers stalled or when the end position was reached, whichever came first. This posed a problem when grasping, because if the object shifted while being lifted, the fingers did not close further in order to hold it tight. Starting in revision 8086 of O\-W\-D, once the fingers stop moving the first time, O\-W\-D will begin reporting their state as \char`\"{}state\-\_\-done\char`\"{} (value 1), but will turn off the T\-S\-T\-O\-P flag on the three fingers and reissue the move command with a much lower maximum torque value. This will cause the fingers to keep applying moderate pressure in the same direction as they were moving, and to move when possible, up to the same ending position. The torque value (currently 800ma) has been chosen to be strong enough to keep applying steady pressure but low enough so that the finger motors will not overheat if they are kept in this condition indefinitely. This change affects F1-\/\-F3 only; the spread behavior is unchanged. \mbox{[}23-\/\-Mar-\/2011\mbox{]}
+
+{\bfseries Corrected finger transforms} Some of the transforms that O\-W\-D published for the fingers on the 280 hand were incorrect. The code has been rewritten and is now behaving correctly in rev. 8011. Associated with this change is a modification to the origin of the link1.\-iv file used in Open\-R\-A\-V\-E, and the bh\-\_\-link1.\-stl file used in R\-Viz. New versions of both files have been checked in to pr/public/data/ormodels/robots/barrett. \mbox{[}17-\/\-Mar-\/2011\mbox{]}
+
+{\bfseries Reorganized Tactile messages} Tactile data message is now broken into 4 arrays\-: finger1, finger2, finger3, and palm. This was requested by a user to make it easier to identify particular tactile pads. The arrays are still all sent in a single message (owd\-\_\-msgs/\-B\-H\-Tactile). \mbox{[}15-\/\-Mar-\/2011\mbox{]}
+
+{\bfseries Improved W\-A\-M\-State and Traj\-Info state values} The state values in W\-A\-M\-State and Traj\-Info messages have changed slightly in order to make it easier to infer what O\-W\-D is currently doing. Instead of having to look at W\-A\-M\-State.\-state to see that a trajectory is active (state\-\_\-moving) and then having to examine the Traj\-Info.\-state to see what's going on (running vs. paused), all the motion states are now in W\-A\-M\-State.\-state. The state names contain the word \char`\"{}traj\char`\"{} if a trajectory is active\-: uint8 state\-\_\-free=0 uint8 state\-\_\-fixed=1 uint8 state\-\_\-traj\-\_\-active=2 uint8 state\-\_\-traj\-\_\-stalled=3 uint8 state\-\_\-traj\-\_\-paused=4 uint8 state\-\_\-inactive=25 The Traj\-Info.\-state will now contain minimal information as to whether the trajectory is pending, active, done, or aborted. Some of the previous state names have been deprecated and will be removed in a future release. \mbox{[}15-\/\-Mar-\/2011\mbox{]}
+
+{\bfseries Improved routine for saving calibration values} The calibration routine has been changed so that after the arm is returned to home with grav-\/comp on, O\-W\-D waits for $<$return$>$ and then turns the motors off so that the user can readjust the home position before pressing shift-\/idle. This helps to avoid the sudden relaxation of the arm that can throw off the saved home position values. \mbox{[}15-\/\-Mar-\/2011\mbox{]}
+
+{\bfseries Support for 280 Tactile Sensors} Can now read the full 96-\/cell Tactile data from a model 280 Hand. Along the way made many improvements in the C\-A\-Nbus communication code in order to handle multiple simultaneous requests on the bus. \mbox{[}23-\/\-Feb-\/2011\mbox{]}
+
+{\bfseries Method to lock individual joints} The joint hold functionality present in calibration mode has been extended to regular operating mode, and can be utilized with the Set\-Joint\-Stiffness service call. \mbox{[}23-\/\-Feb-\/2011\mbox{]}
+
+{\bfseries Faster stops when palm touches goal}\par
+ Trajectories can now be automatically paused by inputs sensed by the wrist-\/mounted force/torque sensor. The result is a much faster stop with less force applied than when relying on the error torques. Currently the stop condition is a Z-\/force of less than -\/3\-N, but in the future this will be configurable by R\-O\-S parameters for both the hand frame and the workspace frame. To use this functionality, tare the sensor before the beginning of the trajectory, and then call the Add\-Trajectory service with a trajectory that has the Hold\-On\-Force\-Input flag set to true. \mbox{[}11-\/\-Feb-\/2011\mbox{]}
+
+{\bfseries More robust C\-A\-Nbus communication}\par
+ In light of ongoing difficulties with the Peak C\-A\-Nbus card, some critical startup parts of the code are now wrapped in retry blocks, and timeout thresholds have been extended. \mbox{[}04-\/\-Feb-\/2011\mbox{]}
+
+{\bfseries Better finger movements}\par
+ Finger gains have been tuned for better performance. \mbox{[}03-\/\-Feb-\/2011\mbox{]}
+
+{\bfseries Force/\-Torque sensor support}\par
+ Data from the force/torque sensor is now read by owd and published as type geometry\-\_\-msgs/\-Wrench on topic owd/forcetorque. The sensor can be tared by calling the service owd/ft\-\_\-tare. \mbox{[}17-\/\-Dec-\/2010\mbox{]}
+
+\begin{DoxyVerb}Copyright 2011 Carnegie Mellon University and Intel Corporation
+\end{DoxyVerb}
+ \hypertarget{plugins}{}\section{O\-W\-D Plugins}\label{plugins}
+With O\-W\-D plugins you can extend the behavior of O\-W\-D without having to modify the distributed code. This allows you to easily stay on top of O\-W\-D updates, as well as share your improvements with other O\-W\-D users. Furthermore, the plugin architecture speeds the development cycle, since you do not have to recompile O\-W\-D every time you make a change.\hypertarget{plugins_plugin_what}{}\subsection{What they can do}\label{plugins_plugin_what}
+Plugins for O\-W\-D have access to all of the sensor values and motion commands for the W\-A\-M, Barrett Hand, and Force/\-Torque sensor. They can directly interpolate sensor readings without the delays and bandwidth limitations of R\-O\-S messages, perform calculations using O\-W\-D's own internal functions, and command hand and arm motions in ways that are not supported by O\-W\-D's standard interfaces. Additionally, plugins can create their own R\-O\-S interfaces for publishing data, receiving external sensor values, and accepting custom service calls. In short, the plugin interface allows users to experiment with W\-A\-M control without having to modify O\-W\-D on their own.\hypertarget{plugins_plugin_how}{}\subsection{How they work}\label{plugins_plugin_how}
+O\-W\-D plugins are simply Linux shared libraries that define the following two functions\-:
+
+\begin{DoxyVerb}bool register_owd_plugin()
+void unregister_owd_plugin()
+\end{DoxyVerb}
+
+
+Upon loading the plugin, O\-W\-D will call the register\-\_\-owd\-\_\-plugin function, which gives the plugin the opportunity to initialize itself and start running. Plugins interface with O\-W\-D through the O\-W\-D\-::\-Plugin class, which provides read-\/only copies of all the sensor values and functions for motion control of the arm and hand. Plugins can either make use of O\-W\-D's callback functionality for regular updates via the O\-W\-D\-::\-Plugin\-::\-Publish function, or they can create their own threads. Plugins can also create their own trajectory types and ask that O\-W\-D execute them. When O\-W\-D shuts down it will call the unregister\-\_\-owd\-\_\-plugin function so that the plugin can terminate its own R\-O\-S services and clean up.
+
+Plugins are specified to O\-W\-D via the {\bfseries $\sim$/owd\-\_\-plugins} R\-O\-S parameter, which should contain a comma-\/separated list of shared libraries (full pathname recommended). O\-W\-D will send I\-N\-F\-O level R\-O\-S log messages as each plugin is loaded and registered.\hypertarget{plugins_plugin_writing}{}\subsection{Writing an O\-W\-D plugin}\label{plugins_plugin_writing}
+A plugin should be created as its own R\-O\-S package, with a manifest-\/specified dependency on owd. The C\-Make\-Lists.\-txt file should contain a rosbuild\-\_\-add\-\_\-library() directive to create the shared library. As long as the library contains the functions register\-\_\-owd\-\_\-plugin and unregister\-\_\-owd\-\_\-plugin (described above), it will be compatible with O\-W\-D.
+
+A typical plugin will include the following files\-:
+
+\begin{DoxyVerb}#include <openwam/Plugin.hh>
+#include <openwam/Trajectory.hh>
+#include <ros/ros.h>
+\end{DoxyVerb}
+
+
+This will give the plugin access to the O\-W\-D\-::\-Plugin class (for interfacing to O\-W\-D) and the O\-W\-D\-::\-Trajectory class (for deriving custom O\-W\-D trajectories). For automatic periodic calls to the plugin, users can subclass the O\-W\-D\-::\-Plugin class and override the Publish() function. Your Publish() function will be called at the rate defined by O\-W\-D R\-O\-S parameter {\bfseries $\sim$/publish\-\_\-frequency}. In this way you can perform your own calculations on the W\-A\-M state and publish the values to other R\-O\-S nodes or even to non-\/\-R\-O\-S clients.
+
+Custom trajectories are defined by subclassing the O\-W\-D\-::\-Trajectory class. Typically, a plugin will create its own R\-O\-S service for handling trajectory requests, which will create trajectory instances and add them to the O\-W\-D queue. Once O\-W\-D begins execution of the trajectory, it will call the evaluate function until the trajectory transitions from state R\-U\-N to state D\-O\-N\-E. Although a trajectory is usually thought of as a timed path from start\-\_\-position to end\-\_\-position, it can also be a long-\/running behavior that, for instance, servos the W\-A\-M based on sensor data that you are receiving on a R\-O\-S topic. Or a trajectory could be a data-\/gathering device for recording positions and forces while a user manually moves the arm.
+
+A good practice is to tie the R\-O\-S topic / service handlers to the classes that use them. Thus, a user's own Trajectory class might define a static Add\-Trajectory() member that services new trajectory requests. In this way all the code related to creating and running the trajectory is contained within a single class.\hypertarget{plugins_plugin_examples}{}\subsection{Example plugin}\label{plugins_plugin_examples}
+The \href{http://personalrobotics.ri.cmu.edu/intel-pkg/owd_plugin_example/html/index.html}{\tt owd\-\_\-plugin\-\_\-example} node is a fully documented sample O\-W\-D plugin which users are encouraged to modify as a starting point for their own plugins.
+
+\begin{DoxyVerb}Copyright 2011-2012 Carnegie Mellon University and Intel Corporation
+\end{DoxyVerb}
+ 

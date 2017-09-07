@@ -1,0 +1,204 @@
+
+
+{\bfseries O\-W\-D} is a R\-O\-S driver for controlling a Barrett W\-A\-M Arm and/or model 280 Hand.\hypertarget{index_downloading}{}\section{Downloading}\label{index_downloading}
+The O\-W\-D R\-O\-S package, and its owd\-\_\-msgs dependency, can be obtained via svn from \begin{DoxyVerb}https://svn.personalrobotics.ri.cmu.edu/public/latest/owd
+https://svn.personalrobotics.ri.cmu.edu/public/latest/owd_msgs
+\end{DoxyVerb}
+\hypertarget{index_dependencies}{}\section{Dependencies}\label{index_dependencies}
+O\-W\-D requires either a Peak or an E\-S\-D Can\-B\-U\-S card. The Peak I\-P\-E\-H-\/002066 (single channel) or I\-P\-E\-H-\/002067 (dual channel) card is recommended for desktop systems running Xenomai, while the Peak I\-P\-E\-H-\/002093 performs well on laptops if Xenomai is not required.
+
+The Peak Linux driver can be obtained from {\bfseries \href{http://www.peak-system.com/fileadmin/media/linux/files/peak-linux-driver-7.7.tar.gz}{\tt http\-://www.\-peak-\/system.\-com/fileadmin/media/linux/files/peak-\/linux-\/driver-\/7.\-7.\-tar.\-gz}} More information about this driver, along with other versions, can be found at {\bfseries \href{http://www.peak-system.com/fileadmin/media/linux/index.htm}{\tt http\-://www.\-peak-\/system.\-com/fileadmin/media/linux/index.\-htm}} 
+
+Build it as follows\-: \begin{DoxyVerb}  sudo apt-get install libpopt-dev
+  make NET=NO RT=NO_RT
+  sudo make install
+  sudo modprobe pcan
+\end{DoxyVerb}
+ (if you are trying to build the R\-T version of O\-W\-D, substitute R\-T=X\-E\-N\-O\-M\-A\-I in place of R\-T=N\-O\-\_\-\-R\-T)
+
+The remaining system dependencies can be installed using rosdep once you have owd in your R\-O\-S\-\_\-\-P\-A\-C\-K\-A\-G\-E\-\_\-\-P\-A\-T\-H\-: \begin{DoxyVerb}rosdep install owd
+\end{DoxyVerb}
+\hypertarget{index_building}{}\section{Building}\label{index_building}
+Make sure you have both the owd and owd\-\_\-msgs directories in your R\-O\-S\-\_\-\-P\-A\-C\-K\-A\-G\-E\-\_\-\-P\-A\-T\-H, and then build owd using rosmake\-: \begin{DoxyVerb}rosmake owd
+\end{DoxyVerb}
+
+
+Seven executables will be created\-:
+\begin{DoxyItemize}
+\item {\bfseries owd} Driver for arm only
+\item {\bfseries owdrt} Driver for arm running under Xenomai R\-T
+\item {\bfseries owdbhd} Driver for arm plus 280 Hand
+\item {\bfseries owdbhdrt} Driver for arm plus 280 Hand (Xenomai)
+\item {\bfseries canbhd} Driver for 280 Hand only
+\item {\bfseries canbhdrt} Driver for 280 Hand only (Xenomai)
+\item {\bfseries owdsim} Simulation driver for testing clients offline
+\end{DoxyItemize}\hypertarget{index_configuration}{}\section{Configuring}\label{index_configuration}
+{\bfseries owd.\-launch} is a sample launch file for staring owd using {\bfseries roslaunch}. The following parameters are supported\-:
+
+
+\begin{DoxyItemize}
+\item {\bfseries $\sim$/canbus\-\_\-number} Numeric id of the canbus device, appended to \char`\"{}/dev/pcan\char`\"{} for Peak cards or \char`\"{}/dev/can\char`\"{} for E\-S\-D cards.
+\item {\bfseries $\sim$/hand\-\_\-type} Type of hand installed. Should be one of\-:
+\begin{DoxyItemize}
+\item {\bfseries 260} For a B\-H260 Hand (serial communication)
+\item {\bfseries 280} For a B\-H280 Hand (C\-A\-Nbus communication)
+\item {\bfseries 280+\-T\-A\-C\-T} For a B\-H280 Hand with the fingertip tactile arrays installed
+\item {\bfseries none} For no hand installed
+\end{DoxyItemize}
+\item {\bfseries $\sim$/forcetorque\-\_\-sensor} Whether the Barrett Force/\-Torque sensor is installed ({\itshape true/false})
+\item {\bfseries $\sim$/calibration\-\_\-file} A string specifying a file to keep on disk of the joint calibration values (see the \hyperlink{index_calibration}{Calibration} section below)
+\item {\bfseries $\sim$/home\-\_\-position} A comma-\/separated list of joint values, in radians, of the configuration of the arm when the encoder values have been lost and the home position needs to be reset.
+\item {\bfseries $\sim$/tactile\-\_\-top10} If set to {\itshape true} will only report 4-\/bit values for the 10 ten pressures in each tactile array. Default is {\itshape false} (all values are reported as 12-\/bit numbers). Setting to {\itshape true} reduces the communication demands on the C\-A\-N bus, but does not increase the maximum frequency that the sensors can be read, since most of the time is waiting for the hand pucks to gather the tactile data.
+\item {\bfseries $\sim$/hold\-\_\-starting\-\_\-position} If set to {\itshape true} will hold the current position immediately at startup. Defaults to {\itshape false}, in which case it will start up with only gravity compensation leaving the arm free to move.
+\item {\bfseries $\sim$/slip\-\_\-joints\-\_\-on\-\_\-high\-\_\-torque} If set to {\itshape true} will allow the joints to slip when high motor torques are applied. When a joint torque exceeds the threshold, the joint setpoint is moved to reduce the torque. This option is only valid when in gravity compensation and not during any trajectory executions.
+\item {\bfseries $\sim$/modified\-\_\-j1} If set to {\itshape true} O\-W\-D expects that joint 1 has been remounted at 180 degrees from the original, as is done for Herb's configuration. Defaults to {\itshape false} (factory configuration).
+\item {\bfseries $\sim$/wam\-\_\-publish\-\_\-frequency} Rate at which the wamstate and waminternals messages are published, in hertz. Also governs the rate at which a plugin's Publish() function is called. Default is 10, max is 500.
+\item {\bfseries $\sim$/hand\-\_\-publish\-\_\-frequency} Rate at which the handstate messages are published, in hertz, if a model 280 hand is installed. Default is 10, max is 40.
+\item {\bfseries $\sim$/ft\-\_\-publish\-\_\-frequency} Rate at which the forcetorque messages are published, in hertz. Default is 10, max is 500.
+\item {\bfseries $\sim$/tactile\-\_\-publish\-\_\-frequency} Rate at which the tactile messages are published, in hertz. Default is 10, max is 40.
+\item {\bfseries $\sim$/owd\-\_\-plugins} A comma-\/separated list of shared library files to be loaded. See the \hyperlink{plugins}{O\-W\-D Plugins} documentation for more info.
+\item {\bfseries $\sim$/log\-\_\-controller\-\_\-data} If set to {\itshape true} O\-W\-D will create log files of the position, torques, etc in /tmp anytime it is holding position or executing a trajectory. Default is {\itshape false}.
+\item {\bfseries $\sim$/log\-\_\-canbus\-\_\-data} If set to {\itshape true} O\-W\-D will log all the messages sent and received on the C\-A\-Nbus and dump them to the file candata\%\%.log in the current directory at the end of the run, where \%\% is the canbus\-\_\-number. Defaults to {\itshape false}.
+\item {\bfseries $\sim$/gravity\-\_\-vector} The vector describing the direction that gravity is acting on the arm, expressed as a string of three comma-\/separated floating-\/point numbers in the wam0 frame. Default is \char`\"{}-\/1,0,0\char`\"{}, which is the configuration used on Herb and the Darpa A\-R\-M-\/\-S arms, with the base mounted vertically so the cables exit down. For a W\-A\-M arm mounted horizontally on a tabletop, use \char`\"{}0,0,-\/1\char`\"{}.
+\item {\bfseries $\sim$/ignore\-\_\-breakaway\-\_\-encoders} If true, the values of the secondary encoders on an optionally-\/installed B\-H280 hand will be ignored and will not be used to detect breakaway (due to hardware issues, many B\-H280 hands do not have reliable secondary encoder readings). When breakaway detection is disabled the {\bfseries inner\-\_\-links}, {\bfseries outer\-\_\-links}, and {\bfseries breakaway} arrays in the W\-A\-M\-State message will be zero length. Defaults to false.
+\end{DoxyItemize}\hypertarget{index_running}{}\section{Running}\label{index_running}
+At this time O\-W\-D should be launched on the same machine it will run on, since it requires stdio for startup prompts.
+
+\begin{DoxyVerb}roslaunch owd.launch
+\end{DoxyVerb}
+
+
+No more than one O\-W\-D should be started from a single roslaunch file so that the stdio from each remains independent.
+
+If the motor encoder values have not been preserved from a previous run, owd will ask you to first move the hand to a safe space for initialization, and then to move the arm to its home position. You can choose the home position to be something convenient based on how your W\-A\-M is mounted, but in general it's good to have as many joints as possible against one of their stops for repeatability. As long as you match the joint angles specified in the {\itshape home\-\_\-position} R\-O\-S parameter, owd be able to successfully set the correct joint angles. For more accurate joint angle calibration, see the \hyperlink{index_calibration}{Calibration} section for details on preserving calibration values in a file.\hypertarget{index_controlling}{}\section{Controlling}\label{index_controlling}
+The most common way of using O\-W\-D is send it jointspace trajectories that define the path of the arm. O\-W\-D does not do any self-\/collision or environment collision checking, so that responsibility lies with the client sending the trajectory. The following R\-O\-S Service Calls are supported for manipulating trajectories\-:
+
+
+\begin{DoxyItemize}
+\item {\bfseries Add\-Trajectory\-:} Adds a new joint trajectory to the queue. Options\-:
+\begin{DoxyItemize}
+\item opt\-\_\-\-Wait\-For\-Start\-: Initializes the trajectory in the Paused state; you can start the trajectory by calling Pause\-Trajectory with a value of zero.
+\item opt\-\_\-\-Cancel\-On\-Stall\-: Aborts the trajectory if the arm stalls (normally O\-W\-D will try to resume a stalled trajectory automatically).
+\item opt\-\_\-\-Cancel\-On\-Force\-Input\-: Aborts the trajectory if the force/torque sensor reports a force or torque that exceeds the threshold set by the owd/\-Set\-Force\-Input\-Threshold service. \begin{DoxyNote}{Note}
+If the arm is idle (has 0 stiffness), and O\-W\-D receives a trajectory, then the stiffness will be set to 1 and the trajectory will be run, as long as the starting point matches. There is no \char`\"{}get stiffness\char`\"{} call. However, the state field in the wamstate message gives an indication of whether stiffness is zero (state\-\_\-free) or non-\/zero (state\-\_\-fixed or one of the trajectory states).
+\end{DoxyNote}
+
+\end{DoxyItemize}
+\item {\bfseries Pause\-Trajectory\-:} Pauses / unpauses the currently-\/running trajectory
+\item {\bfseries Delete\-Trajectory\-:} Deletes the specified trajectory from the queue. If the current trajectory is deleted then the arm will stop where it is. Any queued trajectories following the deleted one will also be deleted if their start position does not match the current position (if the current trajectory was deleted) or the end position of the previous trajectory (if a queued trajectory was deleted)
+\item {\bfseries Cancel\-All\-Trajectories\-:} Always brings the arm to an immediate stop by deleting the current trajectory and all queued trajectories.
+\item {\bfseries Replace\-Trajectory\-:} Replaces a queued trajectory with a new one. If the end position changes, then any subsequent trajectories already in the queue will be deleted.
+\end{DoxyItemize}
+
+A few additional service calls are provided for manipulating O\-W\-D\-:
+
+
+\begin{DoxyItemize}
+\item {\bfseries Set\-Stiffness\-:} Controls how firmly O\-W\-D will try to hold the current position, on a scale from 0 (no holding at all) to 1 (firmly holding). \begin{DoxyAttention}{Attention}
+Stiffness values between 0 and 1 are still kind of experimental. The stiffness basically just scales back the amount of P\-I\-D torque being added in. It is not recommended trying to run trajectories with anything other than stiffness 1. However, a stiffness of 0.\-2 or so may be useful when holding position if you expect people to be interacting with the arm (like taking an object from the closed hand). 
+\end{DoxyAttention}
+\begin{DoxyNote}{Note}
+O\-W\-D has a feature that lets you \char`\"{}override\char`\"{} the held position of any of the joints by physically moving the arm. Some of them take more force than others, but basically it comes down to the safety torque thresholds set in the W\-A\-M\-::safety\-\_\-torques\-\_\-exceeded() function in openwam/\-W\-A\-M.\-cc. During hold position mode if O\-W\-D notices that any of the P\-I\-D torques exceed their threshold it will \char`\"{}slide\char`\"{} the target position towards the current position until the torques are back under the threshold. Basically, O\-W\-D trys to keep from ever exerting a lot of force in order to keep things safe for people nearby, so held positions will yield to force, and trajectories will slow down or stop instead of pushing harder.
+\end{DoxyNote}
+
+\item {\bfseries Set\-Speed\-:} Sets the max speed of each joint. Note that there are compiled-\/in joint velocity limits which prevent the speed from being set to an unsafe value.
+\item {\bfseries Set\-Extra\-Mass\-:} Adds the specified mass properties (mass, C\-O\-G, and inertia) to the specified link, so that O\-W\-D can better compensate for a heavy object that is held by the hand or otherwise attached to the arm. When the object is released this call should be repeated with mass and inertia of zero.
+\item {\bfseries Set\-Stall\-Sensitivity\-:} Specifies how sensitive O\-W\-D is to detecting stalling of the arm while executing trajectories, on a scale of 0 to 1. The P\-I\-D correction torques for each joint are multiplied by the stall sensitivity before being compared against the safety\-\_\-torque threshold values. Defaults to 1.\-0, the most sensitive setting.
+\item {\bfseries Set\-Force\-Input\-Threshold\-:} Sets the termination criteria for trajectories having the Cancel\-On\-Force\-Input option set. Takes three arguments\-:
+\begin{DoxyItemize}
+\item {\bfseries direction} is a unit vector in the force/torque coordinate frame (which is in the same orientation as the hand frame)
+\item {\bfseries force} is a scalar representing the threshold value, in Newtons
+\item {\bfseries torque} is a vector of the three torques The values you set will remain set until you change them again. The initial value is (0,0,-\/1) and 6 (six Newtons of force pressing in towards the palm).
+\end{DoxyItemize}
+\item {\bfseries Set\-Tactile\-Input\-Threshold\-:} Sets the termination criteria for trajectories having the Cancel\-On\-Tactile\-Input option set. Takes four arguments\-:
+\begin{DoxyItemize}
+\item {\bfseries pad\-\_\-number} is the tactile pad that should be watched (1-\/3 for the three fingers or 4 for the palm)
+\item {\bfseries threshold} is value that tactile cells will be compared to
+\item {\bfseries minimum\-\_\-cells} is the minimum number of cells in a pad that must reach the threshold for a pad to be considered pressed
+\item {\bfseries minimum\-\_\-readings} is the number of successive times a pad must register as pressed before the trajectory is stopped
+\end{DoxyItemize}
+\item {\bfseries Get\-Arm\-D\-O\-F\-:} Returns the number of joints
+\item {\bfseries Calibrate\-Joints\-:} Puts the arm into {\bfseries Calibration Mode}, so that the joints can be calibrated using the text interface on stdin/stdout.
+\item {\bfseries Set\-Joint\-Offsets\-:} Adds the specified angles (in radians) to each reported joint value. This service is intended to adjust the arm calibration online based on an external calibration node. If a trajectory is active, the command will fail and return ok set to false. If the Set\-Stiffness value is nonzero, the held position value will also be adjusted by the offset so that the arm does not physically move. The offset will affect everything in O\-W\-D, including the gravity compensation torques, so a large sudden offset will cause a jump in torques that will make the arm briefly spasm until the controllers stabilize (to avoid this, apply a large offset by making successive service calls with slowly increasing offset values). Set the joint offsets back to zero to restore the initial calibration values.
+\end{DoxyItemize}
+
+O\-W\-D can also be controlled by sending velocities directly to one or more of the joints. Once again, O\-W\-D does not do any collision checking, so the responsiblity lies with the client to avoid sending velocity commands that will crash the arm into things. If the requested velocity is not equal to the current velocity, O\-W\-D will (de)accelerate at the maximum acceleration limit for that joint until the velocities match. If a new velocity command is not received for more than 100ms, O\-W\-D will bring the arm to a controlled stop (the assumption is that the client has died or given up). Velocity commands should be published to the following topic\-:
+
+
+\begin{DoxyItemize}
+\item {\bfseries wamservo} (type owd\-\_\-msgs/\-Servo)\-: A vector of one or more joint indices followed by a vector of corresponding velocities in radians/sec. Note\-: joint indices are 1 based.
+\end{DoxyItemize}
+
+O\-W\-D provides feedback through the following R\-O\-S topics\-:
+
+
+\begin{DoxyItemize}
+\item {\bfseries wamstate\-:} Joint positions, velocities, estimated torques due to external forces, and the state of the trajectory queue
+\item {\bfseries waminternals\-:} Joint positions, total joint torques, feedforward torques from the dynamic simulators, and controller P\-I\-D gain values
+\item {\bfseries filtered\-\_\-forcetorque\-:} A geometry\-\_\-msgs/\-Wrench message containing the values from the force/torque sensor after being filtered by a second-\/order Butterworth lowpass filter with a cutoff frequency of 10hz. This topic is only present if the sensor is installed.
+\item {\bfseries forcetorque\-:} The raw unfiltered values from the force/torque sensor (only published if the sensor is installed).
+\end{DoxyItemize}
+
+Additionally, O\-W\-D publishes a T\-F frame for every link, defining {\bfseries wam1} in terms of {\bfseries wam0}, {\bfseries wam2} in terms of {\bfseries wam1}, etc, all the way up to {\bfseries wam7} in terms of {\bfseries wam6}.
+
+Autogenerated documentation can be found here for the \href{http://personalrobotics.ri.cmu.edu/pr-ros-pkg/owd/html/index-msg.html}{\tt owd} and \href{http://personalrobotics.ri.cmu.edu/pr-ros-pkg/owd_msgs/html/index-msg.html}{\tt owd\-\_\-msgs} R\-O\-S message and service types.\hypertarget{index_barretthand}{}\section{Barrett Hand}\label{index_barretthand}
+O\-W\-D has integrated support for controlling a model 280 Barrett Hand attached to the arm. See the \hyperlink{bhand}{Barrett Hand} page for more information.\hypertarget{index_customizing}{}\section{Customizing}\label{index_customizing}
+O\-W\-D allows users to add new features via run-\/time loadable plugins. See the \hyperlink{plugins}{O\-W\-D Plugins} page for details.\hypertarget{index_shutdown}{}\section{Shutting down}\label{index_shutdown}
+To shut down O\-W\-D and still preserve the encoder values, first press shift-\/idle on the pendant, then kill O\-W\-D with ctrl-\/c. As long as the yellow Idle button stays lit, O\-W\-D can be restarted without having to return the W\-A\-M to the home position.
+
+If the safety board ever shuts down the W\-A\-M due to a torque or velocity fault (red error light), the yellow idle button stays lit, meaning the encoder values are still valid. You can resume operation by killing O\-W\-D with ctrl-\/c, pressing shift-\/idle again to clear the error, and restarting O\-W\-D.\hypertarget{index_calibration}{}\section{Calibration}\label{index_calibration}
+To accurately calibrate each of the joints so that their positions can be recalled for future runs, do the following\-:
+
+
+\begin{DoxyItemize}
+\item launch owd
+\item make a call to the service {\bfseries /owd/\-Calibrate\-Joints} to put the driver into calibration mode
+\item O\-W\-D will print keyboard instructions and then start a display of joint angles.
+\item Use a bubble level on the W\-A\-M links to align each joint
+\begin{DoxyEnumerate}
+\item Start by aligning J1 to be a multiple of 90 degrees.
+\begin{DoxyItemize}
+\item If your W\-A\-M is mounted with the baseplate horizontal, you'll have to pick where you want the J1 zero orientation. A good location is where the alignment marks line up with one another.
+\item If your W\-A\-M is mounted with the baseplate vertical, use a level on the upper arm link, and rotate J1 until the link is either out to one side and level, or straight up and plumb.
+\end{DoxyItemize}
+\item When it's in position, press \char`\"{}1\char`\"{} on the keyboard. O\-W\-D will suggest the nearest 90-\/deg multiple to set it to, and ask you to confirm with \char`\"{}y\char`\"{}.
+\item Repeat with the remaining joints, starting with 2 and continuing up to 7.
+\item To aid in aligning the latter joints, O\-W\-D allows you to \char`\"{}hold\char`\"{} a joint at a particular angle by pressing \char`\"{}h\char`\"{} and the joint number.
+\begin{DoxyItemize}
+\item For example, to align joint 4, first hold joint 2 so that it's horizontal, then put the level on the lower arm and move J4 until it's horizontal, too.
+\item If the joint is with 2 degrees of a multiple of 90, the joint will \char`\"{}snap\char`\"{} to the neared 90 degrees; otherwise, it will be held exactly where it is.
+\end{DoxyItemize}
+\item Joints may be unheld by pressing \char`\"{}u\char`\"{} and the joint number.
+\item Because of possible inaccuracies in the transmission ratios, it is recommended that you set each joint near the center of its range, so that any error near the two joint stops is approximately equal.
+\end{DoxyEnumerate}
+\item When you are satisfied with your new calibration values, press \char`\"{}d\char`\"{} (for \char`\"{}done\char`\"{})
+\begin{DoxyEnumerate}
+\item O\-W\-D will ask you to return the W\-A\-M to its home position so that the calibration offsets can be recorded. Move it to home, hold it steady, and press shift-\/idle.
+\item O\-W\-D will wait briefly for the position to stabilize, then measure the calibration offsets and write them to the file specified in the launch file.
+\item Once it is done, you can press shift-\/activate to resume O\-W\-D.
+\end{DoxyEnumerate}
+\item If you want to abort the calibration, press \char`\"{}q\char`\"{} (for \char`\"{}quit\char`\"{}) and the calibration routine will exit.
+\end{DoxyItemize}
+
+{\bfseries Calibration Details\-:}
+
+
+\begin{DoxyItemize}
+\item The W\-A\-M has encoders only on the motors, and the transmissions between the motors and the joints mean that the motor rotates multiple times (between 10 and 42 times) for a single revolution of a joint. The pucks on each motor keep track of both the motor's actual rotor position (14-\/bit property M\-E\-C\-H) and the estimated joint position (22-\/bit property A\-P (\char`\"{}absolute position\char`\"{})).
+\item The M\-E\-C\-H property value cannot be set; it is the absolute position of the rotor, and only changes when the rotor turns. The A\-P value can be set to whatever we want, and thereafter it will increment or decrement by the same amount that M\-E\-C\-H changes. As the M\-E\-C\-H value wraps around, A\-P keeps going without wrapping (at least when it has been set to a reasonable initial value).
+\item The correct mapping between M\-E\-C\-H and A\-P is unique for each W\-A\-M, and is a function of how the encoder and pinion were mounted on the rotor as well as the cable length and tension. But once the mapping between M\-E\-C\-H and A\-P is measured for a particular joint on a particular W\-A\-M, it is relatively constant.
+\item The \char`\"{}wam\-\_\-joint\-\_\-calibrations\char`\"{} file records the mapping between M\-E\-C\-H and A\-P for each joint, taken at a particular W\-A\-M position. The format of the file is\-: \begin{DoxyVerb}<joint number> = <distance> <MECH>
+where distance = AP-MECH
+\end{DoxyVerb}
+
+\item As long as a W\-A\-M joint motor is within half a revolution of of the position that the mapping was recorded, the mapping can be restored by setting A\-P equal to the current M\-E\-C\-H plus the distance in the calibration file. This restores the joint value to the resolution of the precise encoder tick as what it was when last calibrated. The M\-E\-C\-H value is recorded in the file so that O\-W\-D can be sure of using the right starting position even if we are near the roll-\/over point for the motor encoder. For example, if the mapping was measured with M\-E\-C\-H equal to 4020, and the current M\-E\-C\-H is 63, it realizes that it's more likely we've rotated 139 ticks {\itshape past} the original spot (4096 -\/ 4020 + 63) than 3957 ticks {\itshape before} (4020 -\/ 63).
+\item If the calibration file exists, then O\-W\-D will use it exclusively, and will not use the home\-\_\-position values at all. O\-W\-D just assumes you have moved the joints to the right position when it asks you to, and once it applies the offsets from the calibration file the right joint values come about automatically. The only time that the home\-\_\-position values are required is when there is no calibration file at all. In that case, after O\-W\-D asks you to move to the home position it will set the joints to be exactly those values.
+\item The right way to start O\-W\-D on a new W\-A\-M is to set the home\-\_\-position parameter to the startup configuration you are going to use, and set the wam\-\_\-joint\-\_\-calibrations so that it has a valid pathname but points to a file that does not yet exist. The W\-A\-M will start up with your home position values and should be reasonably good (it certainly should not velocity-\/fault because of gravity compensation errors). Once you perform a calibration, the results will be saved to the specified pathname, and thereafter O\-W\-D will just use the mapping in the file, ignoring the home\-\_\-position value.
+\end{DoxyItemize}\hypertarget{index_develoment}{}\section{Development}\label{index_develoment}
+Development of O\-W\-D is handled by the collaboration of its users. See the \hyperlink{development}{development} page for the current task list and schedule.\hypertarget{index_owdnews}{}\section{New Features}\label{index_owdnews}
+Announcements of new features and bug fixes are listed on the \hyperlink{news}{O\-W\-D News} page.\hypertarget{index_owdusers}{}\section{Mailing List}\label{index_owdusers}
+To stay up-\/to-\/date with new feature announcements and discussions, subscribe to the owd-\/users mailing list at \href{https://lists.andrew.cmu.edu/mailman/listinfo/owd-users}{\tt https\-://lists.\-andrew.\-cmu.\-edu/mailman/listinfo/owd-\/users}
+
+\begin{DoxyVerb}Copyright 2010-2012 Carnegie Mellon University and Intel Corporation
+\end{DoxyVerb}
+ 

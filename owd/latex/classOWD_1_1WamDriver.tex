@@ -1,0 +1,173 @@
+\hypertarget{classOWD_1_1WamDriver}{\section{O\-W\-D\-:\-:Wam\-Driver Class Reference}
+\label{classOWD_1_1WamDriver}\index{O\-W\-D\-::\-Wam\-Driver@{O\-W\-D\-::\-Wam\-Driver}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classOWD_1_1WamDriver_a6bb518b1c338fa042ea73371fe4e193c}{Wam\-Driver} (int canbus\-\_\-number, int bh\-\_\-model, bool forcetorque, bool tactile)
+\item 
+\hypertarget{classOWD_1_1WamDriver_aad247d3160b79af144b074411e9cad3f}{bool {\bfseries Init} (const char $\ast$joint\-\_\-calibration\-\_\-file)}\label{classOWD_1_1WamDriver_aad247d3160b79af144b074411e9cad3f}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a96800b8ef4ad84abccb99aaf91821c4d}{void {\bfseries Pump} (const ros\-::\-Timer\-Event \&e)}\label{classOWD_1_1WamDriver_a96800b8ef4ad84abccb99aaf91821c4d}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a9faad65443fa5cbe2156a75d0e18d590}{bool {\bfseries Publish} ()}\label{classOWD_1_1WamDriver_a9faad65443fa5cbe2156a75d0e18d590}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a00a8946817f91ad2d0f883c0ce7a43e3}{void {\bfseries Update} ()}\label{classOWD_1_1WamDriver_a00a8946817f91ad2d0f883c0ce7a43e3}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_aea5772afff523f3086516b559693a801}{bool {\bfseries Add\-Trajectory} (Trajectory $\ast$traj, std\-::string \&failure\-\_\-reason)}\label{classOWD_1_1WamDriver_aea5772afff523f3086516b559693a801}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a94b2f0531c886c2c8273724f26d9d9a6}{bool {\bfseries Add\-Trajectory} (owd\-\_\-msgs\-::\-Add\-Trajectory\-::\-Request \&req, owd\-\_\-msgs\-::\-Add\-Trajectory\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a94b2f0531c886c2c8273724f26d9d9a6}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a28e382ed78d83bae4d04a47c6873fd91}{bool {\bfseries Add\-Timed\-Trajectory} (owd\-\_\-msgs\-::\-Add\-Timed\-Trajectory\-::\-Request \&req, owd\-\_\-msgs\-::\-Add\-Timed\-Trajectory\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a28e382ed78d83bae4d04a47c6873fd91}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_ab8afa3cb969edd69a3b2dab52f282a8c}{bool {\bfseries Delete\-Trajectory} (owd\-\_\-msgs\-::\-Delete\-Trajectory\-::\-Request \&req, owd\-\_\-msgs\-::\-Delete\-Trajectory\-::\-Response \&res)}\label{classOWD_1_1WamDriver_ab8afa3cb969edd69a3b2dab52f282a8c}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_ae0133b2ca189232bcc7db1bc2100ab3d}{bool {\bfseries Cancel\-All\-Trajectories} (owd\-\_\-msgs\-::\-Cancel\-All\-Trajectories\-::\-Request \&req, owd\-\_\-msgs\-::\-Cancel\-All\-Trajectories\-::\-Response \&res)}\label{classOWD_1_1WamDriver_ae0133b2ca189232bcc7db1bc2100ab3d}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_af684c63fa29f965c34c9181bf01bdbfb}{bool {\bfseries Pause\-Trajectory} (owd\-\_\-msgs\-::\-Pause\-Trajectory\-::\-Request \&req, owd\-\_\-msgs\-::\-Pause\-Trajectory\-::\-Response \&res)}\label{classOWD_1_1WamDriver_af684c63fa29f965c34c9181bf01bdbfb}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a60531435102c2e0ee975a20c7b2146c3}{bool {\bfseries Replace\-Trajectory} (owd\-\_\-msgs\-::\-Replace\-Trajectory\-::\-Request \&req, owd\-\_\-msgs\-::\-Replace\-Trajectory\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a60531435102c2e0ee975a20c7b2146c3}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_ac0fa645c84160dc9c41aa90565ac66ef}{bool {\bfseries Get\-Stiffness} (owd\-\_\-msgs\-::\-Get\-Stiffness\-::\-Request \&req, owd\-\_\-msgs\-::\-Get\-Stiffness\-::\-Response \&res)}\label{classOWD_1_1WamDriver_ac0fa645c84160dc9c41aa90565ac66ef}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_ab8c10f7d71b5c3304d91f5779befdf9c}{bool {\bfseries Set\-Stiffness} (owd\-\_\-msgs\-::\-Set\-Stiffness\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Stiffness\-::\-Response \&res)}\label{classOWD_1_1WamDriver_ab8c10f7d71b5c3304d91f5779befdf9c}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a21cd219a04b34648925088bb932daa12}{bool {\bfseries Set\-Joint\-Stiffness} (owd\-\_\-msgs\-::\-Set\-Joint\-Stiffness\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Joint\-Stiffness\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a21cd219a04b34648925088bb932daa12}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_aadd177e2a03c60a64dfa9aaac3cff7ce}{bool {\bfseries Set\-Joint\-Offsets} (owd\-\_\-msgs\-::\-Set\-Joint\-Offsets\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Joint\-Offsets\-::\-Response \&res)}\label{classOWD_1_1WamDriver_aadd177e2a03c60a64dfa9aaac3cff7ce}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a984046c077389c4512a61cbc24005371}{bool {\bfseries Set\-Speed} (owd\-\_\-msgs\-::\-Set\-Speed\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Speed\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a984046c077389c4512a61cbc24005371}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a4d4eb5a53e098372c852cf5fa8425a2a}{bool {\bfseries Get\-Speed} (owd\-\_\-msgs\-::\-Get\-Speed\-::\-Request \&req, owd\-\_\-msgs\-::\-Get\-Speed\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a4d4eb5a53e098372c852cf5fa8425a2a}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_ab20f12a316dcbc11f3406549d26b6c4d}{bool {\bfseries Set\-Extra\-Mass} (owd\-\_\-msgs\-::\-Set\-Extra\-Mass\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Extra\-Mass\-::\-Response \&res)}\label{classOWD_1_1WamDriver_ab20f12a316dcbc11f3406549d26b6c4d}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a0065001e7d51270ba79db365886282bb}{bool {\bfseries Set\-Stall\-Sensitivity} (owd\-\_\-msgs\-::\-Set\-Stall\-Sensitivity\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Stall\-Sensitivity\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a0065001e7d51270ba79db365886282bb}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a96afd22bdec4da39c3807c65f9f31448}{bool {\bfseries Get\-Stall\-Sensitivity} (owd\-\_\-msgs\-::\-Get\-Stall\-Sensitivity\-::\-Request \&req, owd\-\_\-msgs\-::\-Get\-Stall\-Sensitivity\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a96afd22bdec4da39c3807c65f9f31448}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_aae2a8eba423140353c6d869f2b4ea174}{bool {\bfseries Get\-D\-O\-F} (owd\-\_\-msgs\-::\-Get\-D\-O\-F\-::\-Request \&req, owd\-\_\-msgs\-::\-Get\-D\-O\-F\-::\-Response \&res)}\label{classOWD_1_1WamDriver_aae2a8eba423140353c6d869f2b4ea174}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a0dead50cda5ec7553558ec63b13e624d}{bool {\bfseries Calibrate\-Joints} (owd\-\_\-msgs\-::\-Calibrate\-Joints\-::\-Request \&req, owd\-\_\-msgs\-::\-Calibrate\-Joints\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a0dead50cda5ec7553558ec63b13e624d}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_aa5e89be3792a9eadaa6d1543065b58c3}{bool {\bfseries Step\-Joint} (owd\-\_\-msgs\-::\-Step\-Joint\-::\-Request \&req, owd\-\_\-msgs\-::\-Step\-Joint\-::\-Response \&res)}\label{classOWD_1_1WamDriver_aa5e89be3792a9eadaa6d1543065b58c3}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a3c588d208a0d55b3dc616087d87e0139}{bool {\bfseries Set\-Gains} (owd\-\_\-msgs\-::\-Set\-Gains\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Gains\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a3c588d208a0d55b3dc616087d87e0139}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a25025bae408980b41474368a0fe512d7}{bool {\bfseries Reload\-Plugins} (owd\-\_\-msgs\-::\-Reset\-::\-Request \&req, owd\-\_\-msgs\-::\-Reset\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a25025bae408980b41474368a0fe512d7}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a3e33441262f75f89d13d7cb9f8f0e664}{bool {\bfseries Set\-Force\-Input\-Threshold} (owd\-\_\-msgs\-::\-Set\-Force\-Input\-Threshold\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Force\-Input\-Threshold\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a3e33441262f75f89d13d7cb9f8f0e664}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_af5c04bd7e5abb79caad63ff5fbb6f68c}{bool {\bfseries Set\-Tactile\-Input\-Threshold} (owd\-\_\-msgs\-::\-Set\-Tactile\-Input\-Threshold\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Tactile\-Input\-Threshold\-::\-Response \&res)}\label{classOWD_1_1WamDriver_af5c04bd7e5abb79caad63ff5fbb6f68c}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a391ce38d935749644494c9e4d4b4d07a}{bool {\bfseries Set\-Torque\-Limits} (owd\-\_\-msgs\-::\-Set\-Torque\-Limits\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Torque\-Limits\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a391ce38d935749644494c9e4d4b4d07a}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a86a5f43f37f78088bf7b7ae28e069a7b}{bool {\bfseries Set\-Controller} (owd\-\_\-msgs\-::\-Set\-Controller\-::\-Request \&req, owd\-\_\-msgs\-::\-Set\-Controller\-::\-Response \&res)}\label{classOWD_1_1WamDriver_a86a5f43f37f78088bf7b7ae28e069a7b}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a787133274cc62a57a338263b3ee90b39}{void {\bfseries Advertise\-And\-Subscribe} (ros\-::\-Node\-Handle \&n)}\label{classOWD_1_1WamDriver_a787133274cc62a57a338263b3ee90b39}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a632a676878dd657f81e69bf004d34c9c}{owd\-\_\-msgs\-::\-Add\-Trajectory\-::\-Response {\bfseries Add\-Trajectory} (owd\-\_\-msgs\-::\-Add\-Trajectory\-::\-Request $\ast$)}\label{classOWD_1_1WamDriver_a632a676878dd657f81e69bf004d34c9c}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a6af3daa62aade906f99c17832b600b22}{void {\bfseries update\-\_\-xmission\-\_\-ratio} (const char $\ast$param\-\_\-name, double \&current\-\_\-value, double nominal\-\_\-value)}\label{classOWD_1_1WamDriver_a6af3daa62aade906f99c17832b600b22}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a04d519830168e5b5155471523913968c}{void {\bfseries wamservo\-\_\-callback} (const boost\-::shared\-\_\-ptr$<$ const owd\-\_\-msgs\-::\-Servo $>$ \&message)}\label{classOWD_1_1WamDriver_a04d519830168e5b5155471523913968c}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a981901f1f18e0c4ad453b631c9bea501}{void {\bfseries wamservoopt\-\_\-callback} (const boost\-::shared\-\_\-ptr$<$ const owd\-\_\-msgs\-::\-Servo\-Opt $>$ \&message)}\label{classOWD_1_1WamDriver_a981901f1f18e0c4ad453b631c9bea501}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a51a6533134112326c9f07f91ee1f7f8c}{void {\bfseries Mass\-Properties\-\_\-callback} (const boost\-::shared\-\_\-ptr$<$ const owd\-\_\-msgs\-::\-Mass\-Properties $>$ \&message)}\label{classOWD_1_1WamDriver_a51a6533134112326c9f07f91ee1f7f8c}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_adcf528d1f38ea6a3631b2ef6a0c9323d}{void {\bfseries Set\-Modified\-J1} (bool mj1)}\label{classOWD_1_1WamDriver_adcf528d1f38ea6a3631b2ef6a0c9323d}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classOWD_1_1WamDriver_a6e5fddf2831933962a255887ab786803}{bool {\bfseries running}}\label{classOWD_1_1WamDriver_a6e5fddf2831933962a255887ab786803}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classOWD_1_1WamDriver_ade972f01b75c75d37ab363891ae3e261}{static C\-A\-Nbus $\ast$ {\bfseries bus} = N\-U\-L\-L}\label{classOWD_1_1WamDriver_ade972f01b75c75d37ab363891ae3e261}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a4367ccf5a772c73eb4f29db832d56f65}{static W\-A\-M $\ast$ {\bfseries owam} = N\-U\-L\-L}\label{classOWD_1_1WamDriver_a4367ccf5a772c73eb4f29db832d56f65}
+
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classOWD_1_1WamDriver_ac3021095884bb36c725625c73800197f}{class {\bfseries Position\-Command}}\label{classOWD_1_1WamDriver_ac3021095884bb36c725625c73800197f}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_a7be67204b5ea3024401cff4845d96f51}{class {\bfseries Trajectory\-Command}}\label{classOWD_1_1WamDriver_a7be67204b5ea3024401cff4845d96f51}
+
+\item 
+\hypertarget{classOWD_1_1WamDriver_ab3a5a13fe0f3e14e0ac76088579a0969}{class {\bfseries Trajectory}}\label{classOWD_1_1WamDriver_ab3a5a13fe0f3e14e0ac76088579a0969}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classOWD_1_1WamDriver_a6bb518b1c338fa042ea73371fe4e193c}{\index{O\-W\-D\-::\-Wam\-Driver@{O\-W\-D\-::\-Wam\-Driver}!Wam\-Driver@{Wam\-Driver}}
+\index{Wam\-Driver@{Wam\-Driver}!OWD::WamDriver@{O\-W\-D\-::\-Wam\-Driver}}
+\subsubsection[{Wam\-Driver}]{\setlength{\rightskip}{0pt plus 5cm}O\-W\-D\-::\-Wam\-Driver\-::\-Wam\-Driver (
+\begin{DoxyParamCaption}
+\item[{int}]{canbus\-\_\-number, }
+\item[{int}]{bh\-\_\-model, }
+\item[{bool}]{forcetorque, }
+\item[{bool}]{tactile}
+\end{DoxyParamCaption}
+)}}\label{classOWD_1_1WamDriver_a6bb518b1c338fa042ea73371fe4e193c}
+Constructor 
+\begin{DoxyParams}{Parameters}
+{\em canbus\-\_\-number} & numeric suffix for C\-A\-N bus device (/dev/can\# for E\-S\-D cards or /dev/pcan\# for P\-E\-A\-K cards) \\
+\hline
+{\em bh\-\_\-model} & 260 for the serial hand, 280 for the C\-A\-Nbus hand, or 0 for no hand \\
+\hline
+{\em forcetorque} & true if the force/torque sensor is installed \\
+\hline
+{\em tactile} & true if the tactile sensors are installed (B\-H model 280 only) \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+openwamdriver.\-h\item 
+openwamdriver.\-cpp\end{DoxyCompactItemize}

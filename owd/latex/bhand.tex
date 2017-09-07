@@ -1,0 +1,49 @@
+For historical reasons we have a separate node, \char`\"{}bhd\char`\"{}, for controlling the 262 hand. When the 280 hand came out it required integrating the hand C\-A\-Nbus commands into O\-W\-D, so when O\-W\-D is configured for a 280 hand it also mimics a B\-H\-D node (which is why the hand services are all prefixed with \char`\"{}bhd/\char`\"{} instead of \char`\"{}owd/\char`\"{}).
+
+\begin{DoxyNote}{Note}
+We run a mixed environment on Herb with no problems at all\-: O\-W\-D plus B\-H\-D for the left arm (which has a 262 hand), and O\-W\-D alone for the right arm (with a 280 hand). There is no discernible difference for the clients which communicate with them.
+\end{DoxyNote}
+\hypertarget{bhand_parameters}{}\section{Parameters}\label{bhand_parameters}
+
+\begin{DoxyItemize}
+\item {\bfseries $\sim$/hand\-\_\-type} Type of hand installed. Should be one of\-:
+\begin{DoxyItemize}
+\item {\bfseries 260} For a B\-H260 Hand (serial communication)
+\item {\bfseries 280} For a B\-H280 Hand (C\-A\-Nbus communication)
+\item {\bfseries 280+\-T\-A\-C\-T} For a B\-H280 Hand with the fingertip tactile arrays installed
+\item {\bfseries none} For no hand installed
+\end{DoxyItemize}
+\item {\bfseries $\sim$/hand\-\_\-publish\-\_\-frequency} Rate at which the handstate messages are published, in hertz, if a model 280 hand is installed. Default is 10, max is 40.
+\item {\bfseries $\sim$/tactile\-\_\-publish\-\_\-frequency} Rate at which the tactile messages are published, in hertz. Default is 10, max is 40.
+\item {\bfseries $\sim$/tactile\-\_\-top10} If set to {\itshape true} will only report 4-\/bit values for the 10 ten pressures in each tactile array. Default is {\itshape false} (all values are reported as 12-\/bit numbers). Setting to {\itshape true} reduces the communication demands on the C\-A\-N bus, but does not increase the maximum frequency that the sensors can be read, since most of the time is waiting for the hand pucks to gather the tactile data.
+\end{DoxyItemize}\hypertarget{bhand_services}{}\section{Services}\label{bhand_services}
+
+\begin{DoxyItemize}
+\item {\bfseries /bhd/\-Get\-Hand\-D\-O\-F}\-: type\-: {\itshape owd\-\_\-msgs/\-Get\-D\-O\-F}. Get the number of degrees of freedom of the hand.
+\item {\bfseries /bhd/\-Move\-Hand}\-: type\-: {\itshape owd\-\_\-msgs/\-Move\-Hand}. Move the hand in either position or velocity mode.
+\item {\bfseries /bhd/\-Relax\-Hand}\-: type\-: {\itshape owd\-\_\-msgs/\-Relax\-Hand}. Idle the hand pucks.
+\item {\bfseries /bhd/\-Reset\-Hand}\-: type\-: {\itshape owd\-\_\-msgs/\-Reset\-Hand}. Send the H\-I (Hand Initialize) command to each hand puck, in the sequence 1, 2, 3, 1, 2, 3, 1, 2, 3, 4 (allows the hand to fully unfold if fingers are blocking one-\/another in the worst-\/case configuration). The H\-I command is the only guaranteed way to clear the breakaway condition.
+\item {\bfseries /bhd/\-Reset\-Hand\-Quick}\-: type\-: {\itshape owd\-\_\-msgs/\-Reset\-Hand}. Send the H\-I (Hand Initialize) command to each hand puck and the spread puck simultaneously. This command will work for most, but not every hand configuration. The H\-I command is the only guaranteed way to clear the breakaway condition.
+\item {\bfseries /bhd/\-Reset\-Finger}\-: type\-: {\itshape owd\-\_\-msgs/\-Reset\-Finger}. Send the H\-I command to a single specified finger (1 through 4).
+\item {\bfseries /bhd/\-Get\-Property}\-: type\-: {\itshape owd\-\_\-msgs/\-Get\-Hand\-Property}. Get a bhand property. See C\-A\-Nbus\-::init\-Property\-Defs for a list of property values.
+\item {\bfseries /bhd/\-Set\-Property}\-: type\-: {\itshape owd\-\_\-msgs/\-Set\-Hand\-Property}. Set a bhand property. See C\-A\-Nbus\-::init\-Property\-Defs for a list of property values.
+\item The model 280 hand uses pucks to control the motors, the same as for the arm joints. Barrett has some documentation on the C\-A\-Nbus communication here\-: \href{http://web.barrett.com/support/Puck_Documentation/CAN_Message_Format.pdf}{\tt http\-://web.\-barrett.\-com/support/\-Puck\-\_\-\-Documentation/\-C\-A\-N\-\_\-\-Message\-\_\-\-Format.\-pdf}. And the full list of puck property names and values is in the C\-A\-Nbus\-::init\-Property\-Defs function in openwam/\-C\-A\-Nbus.\-cc. Many of these are only applicable for arm pucks, and some only for the safety puck, but many (like P/\-A\-P and M\-T) are shared between both arm and hand pucks. The hand pucks have a rudimentary imitation of the original 262 protocol, in that you can send a few different command values (like H\-I or M) to the pucks C\-M\-D property. But for the most part you treat them like arm pucks.
+\item {\bfseries /bhd/\-Set\-Speed}\-: type\-: {\itshape owd\-\_\-msgs/\-Set\-Speed}. Set the speed that the hand will use for a /bhd/\-Move\-Hand position command. The velocities vector should have four values in units of radians per second (three for the fingers, one for the spread). The default values for the 280 hand are 2.\-5 for the fingers and 4.\-3 for the spread. The min\-\_\-accel\-\_\-time field in the service message is ignored.
+\item {\bfseries /bhd/\-Set\-Hand\-Torque}\-: type\-: {\itshape owd\-\_\-msgs/\-Set\-Hand\-Torque}. Set the torques that the hand will use for the position moves. The {\bfseries initial} value will be used for the start of each move, and if the finger gets stalled before it reaches its destination the torque will drop to the {\bfseries sustained} level. Default is 2200 / 1100; do not exceed these defaults or you will risk overheating the hand. If you want to keep the torques below the breakaway torques, try setting them to 1200/1100.
+\end{DoxyItemize}\hypertarget{bhand_topics}{}\section{Topics}\label{bhand_topics}
+
+\begin{DoxyItemize}
+\item {\bfseries /bhd/handstate}\-: type\-: {\itshape owd\-\_\-msgs/\-B\-H\-State}. Publishes the state of the hand at the frequency set by the {\bfseries $\sim$/hand\-\_\-publish\-\_\-frequency} parameter. Includes the following fields\-:
+\begin{DoxyItemize}
+\item float64\mbox{[}\mbox{]} {\bfseries positions\-:} The angle of each inner link, in radians, if the finger is {\itshape not} in breakaway. This is the same angle that the motor tries to seek to when commanding positions. Once the finger goes into the breakaway state, the inner link stops moving, and this field no longer directly reflects any physical position. With the advent of the inner link encoders on the 280 hand, the inner\-\_\-links and outer\-\_\-links fields have superceded this field, but it has been kept for backwards compatibility. Eventually this should be changed to reflect the outer link angle relative to the palm plane, which is always valid even without the inner link encoders, and which could be matched by the position command values.
+\item float64\mbox{[}\mbox{]} {\bfseries inner\-\_\-links\-:} The true angle of each inner link, in radians, relative to the palm plane (range of 0 to 2.\-44). This value is accurate at all times (including the breakaway state). The value is reported for the three fingers only if the hand is equipped with inner-\/link encoders; otherwise this array will be empty.
+\item float64\mbox{[}\mbox{]} {\bfseries outer\-\_\-links\-:} The angle of each outer link, in radians, relative to the inner link (range of 0.\-73 to 1.\-57). This value is accurate at all times (including the breakaway state). The value is reported for the three fingers only if the hand is equipped with inner-\/link encoders; otherwise this array will be empty.
+\item bool\mbox{[}\mbox{]} {\bfseries breakaway\-:} True if the finger is in the breakaway state, detected by watching the ratio of the motor encoder value to the inner link encoder value. Once the breakaway flag has been set, it remains set until the finger is reset with the Reset\-Hand or Reset\-Finger service calls. While this flag is set, O\-W\-D will not repeat movement commands that stop short of their goal, since it may be due to the reduced motion limits during breakaway. If the hand is not equipped with inner link encoders this array will be empty.
+\item float64\mbox{[}\mbox{]} {\bfseries strain\-:} The strain gauge readings for each of the three fingers.
+\item float32 {\bfseries temperature\-:} Not used. The B\-H\-D node, which controls a model 262 hand, populates this field with the temperature of the controller board. This needs to be updated for the 280 hand to report the temps of each of the pucks and their motors.
+\item uint8 {\bfseries state\-:} The motion state of the hand, calculated by aggregating together the states of each of the four motors. Values are in the B\-H\-State.\-msg file.
+\item uint8\mbox{[}\mbox{]} {\bfseries internal\-\_\-state\-:} The individual state of each of the motors. Eventually this will become the only state field, and the existing state field will be removed.
+\item uint8\mbox{[}\mbox{]} {\bfseries puck\-\_\-mode\-:} The M\-O\-D\-E value for each of the pucks. Useful for debugging protocol problems.
+\end{DoxyItemize}
+\item {\bfseries /owd/tactile}\-: type\-: {\itshape owd\-\_\-msgs/\-B\-H\-Tactile}. Data from the tactile sensors on the model B\-H280 hand. Each finger's values are given in units of N/cm$^\wedge$2. The numbering of each array matches the documentation provided by Barrett. 
+\end{DoxyItemize}

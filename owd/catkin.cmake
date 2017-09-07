@@ -68,9 +68,9 @@ set(OWD_TARGETS owdsim)
 
 add_executable(owdsim owd.cpp openwamdriver.cpp)
 add_dependencies(owdsim owd_msgs_generate_messages_cpp)
-target_link_libraries(owdsim openwamsim ${OWD_LIBS})
+target_link_libraries(owdsim openwamsim ${OWD_LIBS} -ldl -lm)
 set_target_properties(owdsim PROPERTIES COMPILE_FLAGS "-DOWDSIM")
-
+set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
 if (CANBUS_TYPE STREQUAL "ESD" OR CANBUS_TYPE STREQUAL "PEAK")
     list(APPEND OWD_TARGETS owd canbhd)
 

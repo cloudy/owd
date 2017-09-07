@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/cloud/catkin_ws/src/owd/owd_msgs/build/devel/setup.sh
